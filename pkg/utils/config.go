@@ -62,5 +62,9 @@ func ReadConfiguration() (Configuration, error) {
 			MaxIdleTime:  viper.GetInt("DB_MAX_IDLE_TIME"),
 			MaxLifeTime:  viper.GetInt("DB_MAX_LIFE_TIME"),
 		},
+		SMTPHost:     viper.GetString("SMTPHost"),
+		SMTPPort:     viper.GetInt("SMTPPort"),
+		SMTPEmail:    viper.GetString("SMTPEmail"),
+		SMTPPassword: viper.GetString("SMTPPassword"),
 	}, nil
 }
