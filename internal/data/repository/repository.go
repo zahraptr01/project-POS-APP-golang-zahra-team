@@ -10,6 +10,7 @@ type Repository struct {
 	RevenueRepo RevenueRepository
 	MenuRepo    MenuRepository
 	UserRepo    UserRepository
+	RegisRepo   ResgiterAdminRepository
 }
 
 func NewRepository(db *gorm.DB, log *zap.Logger) Repository {
@@ -18,5 +19,6 @@ func NewRepository(db *gorm.DB, log *zap.Logger) Repository {
 		RevenueRepo: NewRevenueRepository(db, log),
 		MenuRepo:    NewMenuRepository(db),
 		UserRepo:    NewUserRepository(db),
+		RegisRepo:   NewRegisterAdminRepository(db),
 	}
 }

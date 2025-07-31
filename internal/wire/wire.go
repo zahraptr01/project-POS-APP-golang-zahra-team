@@ -22,11 +22,11 @@ func Wiring(repo repository.Repository, mLogger middleware.LoggerMiddleware, mid
 	return router
 }
 
-func wireUser(router *gin.RouterGroup, middlewareAuth middleware.AuthMiddleware, repo repository.Repository, logger *zap.Logger, config utils.) {
+func wireUser(router *gin.RouterGroup, middlewareAuth middleware.AuthMiddleware, repo repository.Repository, logger *zap.Logger, config utils.Configuration) {
 	usecaseUser := usecase.NewUserService(repo, logger, config)
 	adaptorUser := adaptor.NewHandlerUser(usecaseUser, logger)
 
-	// Buat instance EmailSender dari konfigurasi
+	// Create an instance of EmailSender from the configuration
 	emailSender := utils.NewEmailSender(
 		config.SMTPHost,
 		config.SMTPPort,
@@ -34,9 +34,8 @@ func wireUser(router *gin.RouterGroup, middlewareAuth middleware.AuthMiddleware,
 		config.SMTPPassword,
 	)
 
-	// Gunakan registerAdminRepository yang sudah implement CreateAdmin
-	registerAdminRepo := repository.NewRegisterAdminRepository(repo.DB)
-	usecaseRegisterAdmin := usecase.NewRegisterAdminUsecase(registerAdminRepo, emailSender)
+	// Use registerAdminRepo from the previously created repo
+	usecaseRegisterAdmin := usecase.NewRegisterAdminUsecase(repo.RegisRepo, emailSender)
 	adaptorRegisterAdmin := adaptor.NewRegisterAdminHandler(usecaseRegisterAdmin)
 
 	// Route
@@ -46,7 +45,7 @@ func wireUser(router *gin.RouterGroup, middlewareAuth middleware.AuthMiddleware,
 	router.PUT("/admin/role", middlewareAuth.Auth(), adaptorUser.UpdateAdminAccess)
 	router.GET("/test-handler", adaptorUser.TestHandler)
 
-	// Route pendaftaran admin
+	// Route register admin
 	router.POST("/admin/register", adaptorRegisterAdmin.RegisterAdmin)
 }
 
